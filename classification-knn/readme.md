@@ -1,3 +1,4 @@
+# KNN 
 ## Basic Idea
 KNN is a simple algorithm that stores all available cases and classifies new cases based on a similarity measure which is usually the distance.  
 
@@ -39,6 +40,8 @@ The F1 score lets us see how well our model is at finding the true positives and
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pdfrom sklearn import preprocessing
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 ~~~
 
 ### Import Dataset
@@ -47,4 +50,74 @@ df = pd.read_csv("fileName.csv")
 df.head() #this shows a preview of the dataset
 ~~~
 
+Check features and labels:
+~~~
+df.columns
+~~~
 
+### Preprocessing
+
+Convert data into a numpy array:
+~~~
+X = df[['feature1', 'feature2', 'feature3', 'feature4']].values
+y = df['label'].values
+~~~
+
+Normalize the data (transform the data so that it has a mean of 0 and a standard deviation of 1):
+~~~
+X = preprocessing.StandardScaler().fit(X).transform(X.astype(float))
+~~~
+
+### Train Test Split
+~~~
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=4)
+# test_size is the proportion of the dataset to include in the test split
+# random_state is the seed used by the random number generator, this can be any integer
+~~~
+
+
+### KNN Model
+~~~
+k = 5
+neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train, y_train)
+~~~
+
+### Predict
+~~~
+y_hat = neigh.predict(X_test)
+~~~
+
+`y_hat` is the predicted labels for the test set in the form of a numpy array.
+
+Accuracy could be higher for a different value of k. To find the best value of k, we can loop through a range of values and calculate the accuracy for each value of k. Then finally set this value of k for the model.
+
+~~~
+accuracies = []
+for k in range(1, 10):
+    neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train, y_train)
+    y_hat = neigh.predict(X_test)
+    accuracies.append(np.mean(y_hat == y_test))
+
+# Plot the accuracies
+plt.plot(range(1, 10), accuracies)
+plt.xlabel('Value of K')
+plt.ylabel('Accuracy')
+plt.show()
+~~~
+
+# Decision Tree
+## Basic Idea
+In a decision tree, we essentially have nodes which represent values of a feature. The edges between nodes represent the decision rules. The leaf nodes represent the outcome. The tree is built by splitting the dataset into subsets based on the value of a feature. Choosing the final class label is done by traversing the tree from the root to the leaf node. 
+
+## Making a Decision Tree
+- Choose the best feature to split the data on.
+    - The best feature will give a (or the most) clear separation between the classes.
+    - This introduces two terms:
+        - Predictiveness: How well a feature can predict the class (maximise at this step)
+        - Impurity: How mixed the classes are in a subset (minimise at this step)
+2. Split the data into subsets.
+3. Repeat the process for each feature that we are trying to include in the model.
+
+### Choosing a feature - detailed overview
+Let's take an example of a dataset.  
+We have a dataset with 2 features - `age` (`young` or `old`), `gender` (`male` or `female`) and a label -  `fav_color` (`blue` or `green`).
