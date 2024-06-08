@@ -121,3 +121,48 @@ In a decision tree, we essentially have nodes which represent values of a featur
 ### Choosing a feature - detailed overview
 Let's take an example of a dataset.  
 We have a dataset with 2 features - `age` (`young` or `old`), `gender` (`male` or `female`) and a label -  `fav_color` (`blue` or `green`).
+
+We first define an important measure of impurity - Entropy.  
+
+$Entropy = -p(A)log_{2}(p(A)) - p(B)log_{2}(p(B))$  
+where  
+$p(A) = $ probability of class A 
+
+
+The lower the entropy, the better the feature is at predicting the class, essentially telling us that at this recursive step, this feature can be used to create nodes of the tree.
+
+Continuing with our example, we are at the first node of our decision tree, so currently we have the entire dataset. We calculate the entropy of the entire dataset.  
+Say there are 9 `Blue` and 5 `Green` in the dataset.  
+$Entropy = -\frac{9}{14}log_{2}(\frac{9}{14}) - \frac{5}{14}log_{2}(\frac{5}{14}) = 0.940$
+
+Now say we do a split based on the `age` feature.
+- For the `young` feature, we have 6 `Blue` and 2 `Green`.
+    - Entropy = 0.811
+- For the `old` feature, we have 3 `Blue` and 3 `Green`.
+    - Entropy = 1.00
+
+Let's check for the `gender` feature.
+- For the `male` feature, we have 3 `Blue` and 4 `Green`.
+    - Entropy = 0.985
+- For the `female` feature, we have 6 `Blue` and 1 `Green`.
+    - Entropy = 0.592
+
+At this point we have metrics for each feature. We can now calculate the information gain for each feature.
+
+**Information Gain** is a measure of how well a feature can predict the class.
+
+Information Gain = Entropy of the parent node - Weighted sum of the entropy of the child nodes.
+
+For the `gender` feature, the information gain would be:  
+$IG(gender) = 0.940 - [\frac{7}{14}0.985 + \frac{7}{14}0/592] = 0.151$
+
+For the `age` feature, the information gain would be:  
+$IG(age) = 0.940 - [\frac{8}{14}0.811 + \frac{6}{14}1.00] = 0.048$
+
+Thus, we would choose the `gender` feature to split the dataset on as it has a higher Information Gain at this step.
+
+## Outlined Steps for Decision Tree Classification
+# `ToDo`
+
+# Regression Tree
+# `ToDo`
